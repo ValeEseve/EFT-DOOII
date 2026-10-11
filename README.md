@@ -161,58 +161,53 @@ BibliotecaEscolar/
 El sistema utiliza las siguientes tablas relacionales en MySQL:
 
 ```sql
-CREATE DATABASE IF NOT EXISTS biblioteca_escolar CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE biblioteca_escolar;
+CREATE DATABASE IF NOT EXISTS biblioteca;
+USE biblioteca;
 
--- Tabla de Categorías
-CREATE TABLE IF NOT EXISTS categorias (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(100) NOT NULL,
-    descripcion TEXT
-);
-
--- Tabla de Usuarios del Sistema (Bibliotecarios / Estudiantes)
-CREATE TABLE IF NOT EXISTS usuarios (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(100) NOT NULL,
-    rut VARCHAR(20) NOT NULL UNIQUE,
-    correo VARCHAR(100) NOT NULL,
-    contraseña VARCHAR(255) NOT NULL,
+CREATE TABLE usuarios (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(100),
+    rut VARCHAR(12) UNIQUE,
+    correo VARCHAR(100),
+    contraseña VARCHAR(100),
     rol ENUM('bibliotecario', 'estudiante') NOT NULL
 );
 
--- Tabla de Estudiantes
-CREATE TABLE IF NOT EXISTS estudiantes (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(100) NOT NULL,
-    rut VARCHAR(20) NOT NULL UNIQUE,
-    curso VARCHAR(50) NOT NULL,
-    correo VARCHAR(100) NOT NULL
+CREATE TABLE estudiantes (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(100),
+    rut VARCHAR(12) UNIQUE,
+    curso VARCHAR(20),
+    correo VARCHAR(100)
 );
 
--- Tabla de Libros
-CREATE TABLE IF NOT EXISTS libros (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    titulo VARCHAR(150) NOT NULL,
-    autor VARCHAR(100) NOT NULL,
-    isbn VARCHAR(30) NOT NULL UNIQUE,
+CREATE TABLE categorias (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(100)
+);
+
+CREATE TABLE libros (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    titulo VARCHAR(200),
+    autor VARCHAR(100),
+    isbn VARCHAR(20) UNIQUE,
+    editorial VARCHAR(100),
+    stock INT,
     id_categoria INT,
-    stock INT NOT NULL DEFAULT 0,
-    disponible BOOLEAN NOT NULL DEFAULT TRUE,
-    FOREIGN KEY (id_categoria) REFERENCES categorias(id) ON DELETE SET NULL
+    FOREIGN KEY (id_categoria) REFERENCES categorias(id)
 );
 
--- Tabla de Préstamos
-CREATE TABLE IF NOT EXISTS prestamos (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    id_estudiante INT NOT NULL,
-    id_libro INT NOT NULL,
-    fecha_prestamo DATE NOT NULL,
-    fecha_devolucion DATE NOT NULL,
-    devuelto BOOLEAN NOT NULL DEFAULT FALSE,
-    FOREIGN KEY (id_estudiante) REFERENCES estudiantes(id) ON DELETE CASCADE,
-    FOREIGN KEY (id_libro) REFERENCES libros(id) ON DELETE CASCADE
+CREATE TABLE prestamos (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    id_estudiante INT,
+    id_libro INT,
+    fecha_prestamo DATE,
+    fecha_devolucion DATE,
+    devuelto BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (id_estudiante) REFERENCES estudiantes(id),
+    FOREIGN KEY (id_libro) REFERENCES libros(id)
 );
+
 ```
 
 ---
