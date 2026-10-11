@@ -69,6 +69,35 @@ public class EstudianteDAO {
         return estudiantes;
     }
 
+    public Estudiante buscarPorRut(String rut) {
+        String sql = "SELECT * FROM estudiantes WHERE rut = ?";
+
+        try (
+                Connection conexion = DatabaseConnection.getInstance().conectar();
+                PreparedStatement statement = conexion.prepareStatement(sql)
+        ) {
+
+            statement.setString(1, rut);
+
+            try (ResultSet resultado = statement.executeQuery()) {
+                if (resultado.next()) {
+                    return new Estudiante(
+                            resultado.getInt("id"),
+                            resultado.getString("nombre"),
+                            resultado.getString("rut"),
+                            resultado.getString("correo"),
+                            resultado.getString("curso")
+                    );
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error al buscar estudiante por RUT: " + e.getMessage());
+        }
+
+        return null;
+    }
+
     // UPDATE
     public boolean actualizarEstudiante(Estudiante estudiante) {
 
